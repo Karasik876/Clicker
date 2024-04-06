@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.views import APIView
+
 from .serializers import UserSerializer, UserSerializerDetail
 from rest_framework import generics
 from .forms import UserForm
@@ -45,24 +47,18 @@ def user_logout(request):
 
 
 
-def user_registration(request):
-    if request.method == 'POST':
+class user_register(APIView):
+    def get(self, request):
+        form = UserForm()
+        return render(request, 'register.html', {'form': form})
+    def post(self, request):
         form = UserForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            existing_user = User.objects.filter(username=username)
-            if len(existing_user)==0:
-                password = form.cleaned_data['password']
-                user = User.objects.create_user(username, '', password)
-                user.save()
-                user = authenticate(request, username=username, password=password)
-                login(request, user)
-                return redirect('index')
-            else:
-                return render(request, 'registration.html', {'invalid': True, 'form': form})
-    else:
-        form = UserForm()
-        return render(request, 'registration.html', {'invalid':False, 'form':form})
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+
+        return render(request, 'register.html', {'form': form})
 
 
 

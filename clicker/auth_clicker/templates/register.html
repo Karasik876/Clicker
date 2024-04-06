@@ -15,7 +15,7 @@
       </div>
     <main>
     <div align="center">
-      <form method="post" action="{% url 'registration' %}">
+      <form method="post" action="{% url 'register' %}">
         {%csrf_token%}
         {{form.as_p}}
         <input type="submit" value="SIGN UP">
