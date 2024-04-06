@@ -27,8 +27,8 @@ def index(request):
     else:
         return redirect('login')
 
-def user_login(request):
-    if request.method == 'POST':
+class user_login(APIView):
+    def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -37,13 +37,14 @@ def user_login(request):
             return redirect('index')
         else:
             return render(request, 'login.html', {'invalid': True})
-    else:
+    def get(self, request):
         return render(request, 'login.html', {'invalid': True})
 
 
-def user_logout(request):
-    logout(request)
-    return redirect('login')
+class user_logout(APIView):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
 
 
 
