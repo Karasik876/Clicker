@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerDetail
 from rest_framework import generics
 from .forms import UserForm
+from backend.models import Core
 
 
 # Create your views here.
@@ -23,7 +24,8 @@ class UserDetail(generics.RetrieveAPIView):
 def index(request):
     user = User.objects.filter(id=request.user.id)
     if len(user) != 0:
-        return render(request, 'index.html')
+        core = Core.objects.get(user=request.user)
+        return render(request, 'index.html', {'core': core})
     else:
         return redirect('login')
 
@@ -57,7 +59,10 @@ class user_register(APIView):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            core = Core(user=user)
+            core.save()
             return redirect('index')
+
 
         return render(request, 'register.html', {'form': form})
 
