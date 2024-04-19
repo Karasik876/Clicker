@@ -29,14 +29,43 @@ class BoostViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         boost = self.queryset.get(pk=kwargs['pk'])
+        coins = request.data['coins']
 
-        is_levelup = boost.levelup()
+        is_levelup = boost.levelup(coins)
         if not is_levelup:
-            return Response({'error': 'Нет деняг'})
+            return Response({'error': 'Не хватает монет'})
 
         old_boost_stats, new_boost_stats = is_levelup
 
         return Response({'old_boost_stats': self.serializer_class(old_boost_stats).data,
                          'new_boost_stats': self.serializer_class(new_boost_stats).data})
+
+
+@api_view(['POST'])
+def update_coins(request):
+    print(request.data)
+    coins = request.data['current_coins']  # Значение current_coins будем присылать в теле запроса.
+    auto_click_power = request.data['auto_click_power']
+
+    core = Core.objects.get(user=request.user)
+
+    is_levelup, boost_type = core.set_coins(coins, auto_click_power)  # Метод set_coins скоро добавим в модель. Добавили boost_type для создания буста.
+
+    # Дальнейшая логика осталась прежней, как в call_click
+    if is_levelup:
+        Boost.objects.create(core=core, price=core.coins, power=core.lvl * 2,
+                             type=boost_type)  # Создание буста. Добавили атрибут type.
+    core.save()
+
+    return Response({
+        'core': CoreSerializer(core).data,
+        'is_levelup': is_levelup,
+    })
+
+
+@api_view(['GET'])
+def get_core(request):
+    core = Core.objects.get(user=request.user)
+    return Response({'core': CoreSerializer(core).data})
 
 

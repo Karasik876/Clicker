@@ -9,7 +9,13 @@ h3{
     vertical-align: middle;
     padding-top: 20px;
 }
-
+.cat228 {
+    width: 150px;
+    height: auto;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
 main{
     margin-top: 50px;
     margin-bottom: 50px;
@@ -21,12 +27,59 @@ main{
     color: white;
 }
 
+.boost_1{
+    background: rgb(22,0,36);
+    background: radial-gradient(circle, rgba(22,0,36,1) 0%, rgba(121,9,120,1) 88%, rgba(154,0,255,1) 100%);
+    color: white;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 .logout a {
     color: rgb(209, 209, 209);
     font-size: larger;
 }
-
+#coins{
+    font-size: 25px;
+}
 .logout a:hover{
     color: white;
     text-decoration: none;
+}
+
+
+
+.btn-liquid {
+  display: inline-block;
+  position: relative;
+  width: 240px;
+  height: 60px;
+  margin: 50px;
+  user-select: none;
+
+
+  border-radius: 27px;
+
+  color: #fff;
+  font: 700 14px/60px "Droid Sans", sans-serif;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.btn-liquid .inner {
+  position: relative;
+
+  z-index: 2;
+}
+
+.btn-liquid canvas {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  bottom: -50px;
+  left: -50px;
+
+  z-index: 1;
 }
