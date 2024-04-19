@@ -15,7 +15,12 @@ h3{
     border: 1px solid #000;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
+}
+.brs-button{
+    width: 100px;
+    height: 49px;
+}
+
 main{
     margin-top: 50px;
     margin-bottom: 50px;

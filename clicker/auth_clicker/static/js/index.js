@@ -7,6 +7,9 @@ function GameSession() {
     this.click_power = 1
     this.auto_click_power = 0
     this.next_level_price = 10
+    this.brs_power = 0.01
+    this.brs_points = 0
+
 
     /** Метод для инициализации данных. Данные подгружаются с бэкенда. */
     this.init = function() {
@@ -15,6 +18,8 @@ function GameSession() {
             this.click_power = core.power
             this.auto_click_power = core.auto_click_power
             this.next_level_price = core.next_level_price
+            this.brs_power = core.brs_power
+            this.brs_points = core.brs_points
             render()
         })
     }
@@ -22,6 +27,14 @@ function GameSession() {
     this.add_coins = function(coins) {
         this.coins += coins
         this.check_levelup()
+        render()
+    }
+    this.add_brs_points = function(brs_points){
+        this.brs_points += brs_points
+        render()
+    }
+    this.add_brs_power = function(brs_power){
+        this.brs_power += brs_power
         render()
     }
     /** Метод для добавления невероятной мощи. */
@@ -37,7 +50,7 @@ function GameSession() {
     /** Метод для проверки на повышения уровня. Отправка запроса на сохранение данных, если уровень повышен. */
     this.check_levelup = function() {
         if (this.coins >= this.next_level_price) {
-            updateCoins(this.coins, this.auto_click_power).then(core => {
+            updateCoins(this.coins, this.auto_click_power, this.brs_points).then(core => {
                 this.next_level_price = core.next_level_price
             })
         }
@@ -48,8 +61,10 @@ let Game = new GameSession() // Экземпляр класса GameSession.
 
 /** Функция обработки клика пользователя на какаши. */
 function call_click() {
-
     Game.add_coins(Game.click_power)
+}
+function call_brs_click(){
+    Game.add_brs_points(Game.brs_power)
 }
 
 /** Функция для обновления количества монет, невероятной мощи и дружинных кликуш в HTML-элементах. */
@@ -57,9 +72,13 @@ function render() {
     const coinsNode = document.getElementById('coins')
     const clickNode = document.getElementById('click_power')
     const autoClickNode = document.getElementById('auto_click_power')
+    const brsPowerNode = document.getElementById('brs_power')
+    const brsPointsNode = document.getElementById('brs_points')
     coinsNode.innerHTML = Game.coins
     clickNode.innerHTML = Game.click_power
     autoClickNode.innerHTML = Game.auto_click_power
+    brsPowerNode.innerHTML = Game.brs_power
+    brsPointsNode.innerHTML = Game.brs_points
 }
 
 /** Функция для обновления буста на фронтике. */
@@ -67,6 +86,7 @@ function update_boost(boost) {
     const boost_node = document.getElementById(`boost_${boost.id}`)
     boost_node.querySelector('#boost_level').innerText = boost.lvl
     boost_node.querySelector('#boost_power').innerText = boost.power
+    boost_node.querySelector('#boost_brs_power').innerText = boost.brs_power
     boost_node.querySelector('#boost_price').innerText = boost.price
 }
 
@@ -76,11 +96,21 @@ function add_boost(parent, boost) {
     button.setAttribute('class', `boost_${boost.type}`)
     button.setAttribute('id', `boost_${boost.id}`)
     button.setAttribute('onclick', `buy_boost(${boost.id})`)
-    button.innerHTML = ` 
+    if (boost.type != 2){
+        button.innerHTML = `
         <p>Уровень: <span id="boost_level">${boost.lvl}</span></p>
-        <p>+<span id="boost_power">${boost.power}</span></p> 
-        <p><span id="boost_price">${boost.price}</span></p> 
+        <p>+<span id="boost_power">${boost.power}</span></p>
+        <p><span id="boost_price">${boost.price}</span></p>
     `
+    } else{
+        button.innerHTML = `
+        <p>Уровень: <span id="boost_level">${boost.lvl}</span></p>
+        <p>+ в БРС</p>
+        <span id="boost_brs_power">${boost.brs_power}</span>
+        <p><span id="boost_price">${boost.price}</span></p>
+    `
+    }
+
     parent.appendChild(button)
 }
 
@@ -108,7 +138,7 @@ function getCore() {
 }
 
 /** Функция отправки данных о количестве монет пользователя на бэкенд. */
-function updateCoins(current_coins, auto_click_power) {
+function updateCoins(current_coins, auto_click_power, brs_points) {
     const csrftoken = getCookie('csrftoken')
     return fetch('/update_coins/', {
         method: 'POST',
@@ -118,7 +148,8 @@ function updateCoins(current_coins, auto_click_power) {
         },
         body: JSON.stringify({
             current_coins: current_coins,
-            auto_click_power: auto_click_power
+            auto_click_power: auto_click_power,
+            brs_points: brs_points
         })
     }).then(response => {
         if (response.ok) {
@@ -174,8 +205,10 @@ function buy_boost(boost_id) {
         Game.add_coins(-old_boost_stats.price)
         if (old_boost_stats.type === 1) {
             Game.add_auto_power(old_boost_stats.power)
-        } else {
+        } else if (old_boost_stats.type === 0) {
             Game.add_power(old_boost_stats.power)
+        } else {
+            Game.add_brs_power(old_boost_stats.brs_power)
         }
         update_boost(new_boost_stats) // Обновляем буст на фронтике.
     }).catch(err => console.log(err))
@@ -192,9 +225,9 @@ function setAutoClick() {
 /** Функция обработки автоматического сохранения (отправки данных о количестве монет пользователя на бэкенд). */
 function setAutoSave() {
     setInterval(function() {
-        /** Этот код срабатывает раз в 2 сек. */
-        updateCoins(Game.coins, Game.auto_click_power)
-    }, 2000)
+        /** Этот код срабатывает раз в 1 сек. */
+        updateCoins(Game.coins, Game.auto_click_power, Game.brs_points)
+    }, 1000)
 }
 
 /**

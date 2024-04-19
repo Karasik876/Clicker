@@ -6,15 +6,18 @@ from .constants import *
 
 class Core(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    coins = models.IntegerField(default=0)
-    power = models.IntegerField(default=1)
+    coins = models.IntegerField(default=0) # деньги
+    power = models.IntegerField(default=1) # заработок денег
     lvl = models.IntegerField(default=1)
-    auto_click_power = models.IntegerField(default=0)
+    auto_click_power = models.IntegerField(default=0) #стипендия
+    brs_points = models.FloatField(default=0)
+    brs_power = models.FloatField(default=0.01)
 
     # Метод для установки текущего количества монет пользователя.
-    def set_coins(self, coins, auto_click_power, commit=True):
+    def set_coins(self, coins, auto_click_power, brs_points, commit=True):
         self.coins = coins  # Теперь мы просто присваиваем входящее значение монет.
         self.auto_click_power = auto_click_power
+        self.brs_points = brs_points
         is_levelupdated = self.is_levelup()  # Проверка на повышение уровня.
         boost_type = self.get_boost_type()  # Получение типа буста, который будет создан при повышении уровня.
 
@@ -34,8 +37,10 @@ class Core(models.Model):
     # Выделили получение типа буста в отдельный метод для удобства.
     def get_boost_type(self):
         boost_type = 0
-        if self.lvl % 3 == 0:
+        if (self.lvl % 3 ==0) and (self.lvl % 4 != 0):
             boost_type = 1
+        if self.lvl % 4 ==0:
+            boost_type = 2
         return boost_type
 
     # Поменяли название с check_level_price, потому что теперь так гораздо больше подходит по смыслу.
@@ -48,6 +53,7 @@ class Boost(models.Model):
     lvl = models.IntegerField(default=1)
     price = models.IntegerField(default=10)
     power = models.IntegerField(default=1)
+    brs_power = models.FloatField(default=0)
     type = models.PositiveSmallIntegerField(default=0, choices=BOOST_TYPE_CHOICES)
 
     def levelup(self, current_coins):
@@ -58,10 +64,15 @@ class Boost(models.Model):
 
         self.core.coins = current_coins - self.price  # Обновляем количество монет в базе данных.
         self.core.power += self.power
+        self.core.brs_power += self.brs_power
         self.core.save()
 
         self.lvl += 1
         self.power *= 2
+        if self.type == 2:
+            self.brs_power += 0.01
+
+
         self.price *= 10
         self.save()
 

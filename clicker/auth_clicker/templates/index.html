@@ -18,15 +18,19 @@
      <main>
          <div class="container">
              <div id='coins'>{{core.coins}}</div>
+             <div id="brs_points">{{core.brs_points}}</div>
              <div class="liquid">
                  <a class="btn-liquid" onclick='call_click()'>
                 <span class="inner">Нажми на меня</span>
                 </a>
                  <img src="./static/images/crunch-cat.gif" alt="Cute kitty" class="cat228">
+                 <button class="brs-button" onclick="call_brs_click()"></button>
              </div>
 
              <p>Невероятная мощь клика: <span id="click_power">{{core.power}}</span></p>
              <p>Самостоятельная дружина кликеров. Чел: <span id="auto_click_power">{{ core.auto_click_power }}</span></p>
+             <p>brs_power: <span id="brs_power">{{ core.brs_power }}</span></p>
+
          </div>
          <aside class="boosts" id="boosts">
              <h3>Бусты</h3>
@@ -34,7 +38,11 @@
                  {% for boost in boosts %}
                  <button class="boost_{{boost_type}}" id="boost_{{boost.id}}" onclick="buy_boost({{boost.id}})">
                      <p>Уровень: <span id="boost_level">{{boost.lvl}}</span></p>
-                     <p>+ <span id="boost_power">{{boost.power}}</span></p>
+                     {% if boost_brs_power != 0 %}
+                        <p>+ в БРС <span id="boost_brs_power">{{boost.brs_power}}</span></p>
+                     {% else %}
+                        <p>+ <span id="boost_power">{{boost.power}}</span></p>
+                     {% endif %}
                      <p><span id="boost_price">{{boost.price}}</span></p>
                  </button>
                  {% endfor %}
