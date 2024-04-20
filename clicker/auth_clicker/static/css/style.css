@@ -10,7 +10,10 @@ h3{
     padding-top: 20px;
 }
 
-
+.win{
+    color: green;
+    font-size: 18px;
+}
 
 .cat228 {
     width: 150px;

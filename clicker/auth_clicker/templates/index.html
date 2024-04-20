@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta charset="utf-8">
-    <title>Title </title>
+    <title>Кликер баллов БРС</title>
   </head>
   <body>
       <header><h3> Привет, {{user.username}}! </h3>
@@ -21,6 +21,11 @@
              <div id='coins'>{{core.coins}}</div>
              <strong class="your_brs">Ваш балл БРС:</strong>
              <div id="brs_points">{{core.brs_points}}</div>
+             {% if core.brs_points >= 100 %}
+                        <span class="win">ВЫ ПОБЕДИЛИ, У ВАС 100 БАЛЛОВ В БРС</span>
+                        <p><i>но вы можете продолжить накликивать дальше</i></p>
+
+             {% endif %}
              <div class="liquid">
                  <a class="btn-liquid" onclick='call_click()'>
                 <span class="inner">Нажми на меня</span>
