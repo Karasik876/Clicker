@@ -31,12 +31,13 @@
                 <span class="inner">Нажми на меня</span>
                 </a>
                  <img src="./static/images/crunch-cat.gif" alt="Cute kitty" class="cat228">
-                 <button class="brs-button" onclick="call_brs_click()"></button>
+                 <button id="dissipatingButton" class="dissipateButton" onclick="call_brs_click()"><span>Баллы БРС</span></button>
+                 <script src="static/js/button.js"></script>
              </div>
 
-             <p>Невероятная мощь клика: <span id="click_power">{{core.power}}</span></p>
+             <p>Заработок в один клик: <span id="click_power">{{core.power}}</span></p>
              <p>Стипендия: <span id="auto_click_power">{{ core.auto_click_power }}</span></p>
-             <p>brs_power: <span id="brs_power">{{ core.brs_power }}</span></p>
+             <p>Рост баллов БРС: <span id="brs_power">{{ core.brs_power }}</span></p>
 
          </div>
          <aside class="boosts" id="boosts">
@@ -46,7 +47,7 @@
                  <button class="boost_{{boost_type}}" id="boost_{{boost.id}}" onclick="buy_boost({{boost.id}})">
                      <p>Уровень: <span id="boost_level">{{boost.lvl}}</span></p>
                      {% if boost_brs_power != 0 %}
-                        <p>+ в БРС <span id="boost_brs_power">{{boost.brs_power}}</span></p>
+                        <p>+ <span id="boost_brs_power">{{boost.brs_power}}</span> в БРС </p>
                      {% else %}
                         <p>+ <span id="boost_power">{{boost.power}}</span></p>
                      {% endif %}

@@ -4,6 +4,33 @@ header{
     height: 100px;
 }
 
+
+.dissipateButton {
+  width: 175px;
+  height: 60px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 40px;
+}
+
+.dissipateButton.image {
+  background-image: url('../images/denisborisovi4.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.dissipateButton .hidden {
+  visibility: hidden;
+}
+
+
+
 h3{
     text-align: center;
     vertical-align: middle;
@@ -22,10 +49,7 @@ h3{
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
-.brs-button{
-    width: 100px;
-    height: 49px;
-}
+
 
 main{
     margin-top: 50px;
@@ -42,10 +66,15 @@ main{
     background: rgb(22,0,36);
     background: radial-gradient(circle, rgba(22,0,36,1) 0%, rgba(121,9,120,1) 88%, rgba(154,0,255,1) 100%);
     color: white;
+    font-weight: 600;
     margin-right: 5px;
     margin-left: 5px;
 }
-
+.boost_2{
+    background: rgb(158,255,0);
+    background: radial-gradient(circle, rgba(158,255,0,1) 0%, rgba(138,254,54,1) 36%, rgba(0,255,89,1) 100%);
+    font-weight: 600;
+}
 .logout a {
     color: rgb(209, 209, 209);
     font-size: larger;

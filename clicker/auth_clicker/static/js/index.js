@@ -83,11 +83,13 @@ function render() {
 
 /** Функция для обновления буста на фронтике. */
 function update_boost(boost) {
+    get_boosts()
     const boost_node = document.getElementById(`boost_${boost.id}`)
     boost_node.querySelector('#boost_level').innerText = boost.lvl
     boost_node.querySelector('#boost_power').innerText = boost.power
     boost_node.querySelector('#boost_brs_power').innerText = boost.brs_power
     boost_node.querySelector('#boost_price').innerText = boost.price
+
 }
 
 /** Функция для добавления буста на фронтике. */
@@ -105,8 +107,8 @@ function add_boost(parent, boost) {
     } else{
         button.innerHTML = `
         <p>Уровень: <span id="boost_level">${boost.lvl}</span></p>
-        <p>+ в БРС</p>
-        <span id="boost_brs_power">${boost.brs_power}</span>
+        <p>+ ${boost.brs_power} в БРС</p>
+        <span id="boost_brs_power"></span>
         <p><span id="boost_price">${boost.price}</span></p>
     `
     }
@@ -210,6 +212,7 @@ function buy_boost(boost_id) {
         } else {
             Game.add_brs_power(old_boost_stats.brs_power)
         }
+
         update_boost(new_boost_stats) // Обновляем буст на фронтике.
     }).catch(err => console.log(err))
 }
@@ -227,6 +230,7 @@ function setAutoSave() {
     setInterval(function() {
         /** Этот код срабатывает раз в 1 сек. */
         updateCoins(Game.coins, Game.auto_click_power, Game.brs_points)
+
     }, 1000)
 }
 
@@ -261,10 +265,6 @@ window.onload = function () {
     setAutoSave() // Инициализация автосейва.
     get_boosts()
 }
-
-
-
-
 
 
 
@@ -550,3 +550,10 @@ nextP = points[0];
   // Init
   initButton();
 });
+
+
+
+
+
+
+

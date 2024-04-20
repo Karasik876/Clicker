@@ -37,9 +37,9 @@ class Core(models.Model):
     # Выделили получение типа буста в отдельный метод для удобства.
     def get_boost_type(self):
         boost_type = 0
-        if (self.lvl % 3 ==0) and (self.lvl % 4 != 0):
+        if (self.lvl % 3 ==0) and (self.lvl % 5 != 0):
             boost_type = 1
-        if self.lvl % 4 ==0:
+        if self.lvl % 5 ==0:
             boost_type = 2
         return boost_type
 
@@ -63,17 +63,21 @@ class Boost(models.Model):
         old_boost_stats = copy(self)
 
         self.core.coins = current_coins - self.price  # Обновляем количество монет в базе данных.
-        self.core.power += self.power
+        self.core.power += self.power * BOOST_TYPE_VALUES[self.type]['click_power_scale'] # Умножаем силу клика на константу.
         self.core.brs_power += self.brs_power
         self.core.save()
 
         self.lvl += 1
-        self.power *= 2
+        #self.power *= 2
         if self.type == 2:
             self.brs_power += 0.01
+        elif self.type == 1:
+            self.power += 10 + self.power * BOOST_TYPE_VALUES[self.type]['auto_click_power_scale']
+        else:
+            self.power *= 2
 
+        self.price *= BOOST_TYPE_VALUES[self.type]['price_scale']
 
-        self.price *= 10
         self.save()
 
         return old_boost_stats, self
